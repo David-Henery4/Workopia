@@ -16,4 +16,7 @@
 $router->get("/workopia/public/", "HomeController@index");
 $router->get("/workopia/public/listings", "ListingController@index");
 $router->get("/workopia/public/listings/create", "ListingController@create");
-$router->get("/workopia/public/listing", "ListingController@show");
+// $router->get("/workopia/public/listing", "ListingController@show");
+
+// Dynamic Routes
+$router->get("/workopia/public/listing/{id}", "ListingController@show");
