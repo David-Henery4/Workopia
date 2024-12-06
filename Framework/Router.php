@@ -2,6 +2,8 @@
 
 namespace Framework;
 
+use App\controllers\ErrorController;
+
 class Router {
   protected $routes = [];
   //
@@ -65,17 +67,6 @@ class Router {
   }
   //
   /**
-   * loadErrorPage function
-   * @param int $httpCode
-   * @return void
-   */
-  public function error($httpCode = 404){
-    http_response_code($httpCode);
-    loadView("error/{$httpCode}");
-    exit;
-  }
-  //
-  /**
    * Route Request
    * @param string $uri
    * @param string $method
@@ -92,6 +83,7 @@ class Router {
         return;
       }
     }
-    $this->error();
+    // Reminder: we can use the scoped resolution operator if calling static function on a class.
+    ErrorController::notFound();
   }
 }
