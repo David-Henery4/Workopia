@@ -1,17 +1,8 @@
 <?php
+require __DIR__ . "/../vendor/autoload.php";
 // loadView("home");
 require '../helpers.php';
-
-// Basic Auto-Loader (Custom auto-loader)
-// 1st Arg: Callback function
-// Callback function, 1st Arg: Class
-//
-spl_autoload_register(function ($class) {
-  $path = basePath("Framework/" . $class . ".php");
-  if (file_exists($path)) {
-    require $path;
-  }
-});
+use Framework\Router;
 
 
 // Instantiating the router

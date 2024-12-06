@@ -1,0 +1,15 @@
+{
+  "name": "david-henery4/workopia-php",
+  "description": "Job Listing App",
+  "authors": [
+    {
+      "name": "David Henery"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Framework\\": "Framework/",
+      "App\\": "App/"
+    }
+  }
+} 
