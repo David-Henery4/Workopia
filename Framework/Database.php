@@ -39,9 +39,9 @@ class Database {
   public function query($query, $params = []){
     try {
       $sth = $this->conn->prepare($query);
-      // Bind Params
+      // Bind Params using the "BINDVALUE"!!!!! METHOD
       foreach ($params as $param => $value) {
-        $sth->bindParam(":" . $param, $value);
+        $sth->bindValue(":" . $param, $value);
       }
       //
       $sth->execute();

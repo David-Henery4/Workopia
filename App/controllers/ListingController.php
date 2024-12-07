@@ -78,14 +78,14 @@ class ListingController
     //
     $newListingsData = array_intersect_key($_POST, array_flip($allowedFields));
     //
-    $newListingsData["user_id"] = 1;
+    $newListingsData["user_id"] = 3;
 
     // We use the sanitize function to make sure only a string is rendered,
     // otherwise someone could pass in HTML code or something similar, and that
     // would get rendered.
     $newListingsData = array_map("sanitize", $newListingsData);
     //
-    $requiredFields = ["title", "description", "email", "city", "state"];
+    $requiredFields = ["title", "description", "email", "city", "state", "salary"];
     $errors = [];
     //
     foreach($requiredFields as $field){
@@ -103,6 +103,26 @@ class ListingController
     } else {
       // submit data
       echo "success";
+      //
+      $fields = [];
+      foreach($newListingsData as $field => $value){
+        $fields[] = $field;
+      }
+      $fields = implode(", ", $fields);
+      //
+      $values = [];
+      foreach ($newListingsData as $field => $value) {
+        // Convert empty strings to null;
+        if ($value === ""){
+          $newListingsData[$field] = null;
+        }
+        $values[] = ":" . $field;
+      }
+      $values = implode(", ", $values);
+      //
+      $query = "INSERT INTO listings ({$fields}) VALUES ({$values})";
+      $this->db->query($query, $newListingsData);
+      redirect("/workopia/public/listings");
     }
   }
 };
