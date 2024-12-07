@@ -20,3 +20,6 @@ $router->get("/workopia/public/listings/create", "ListingController@create");
 
 // Dynamic Routes
 $router->get("/workopia/public/listing/{id}", "ListingController@show");
+
+// POST Routes
+$router->post("/workopia/public/listings", "ListingController@store");

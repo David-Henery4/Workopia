@@ -7,7 +7,7 @@ use App\controllers\ErrorController;
 class Router
 {
   protected $routes = [];
-  //
+  
   /**
    * Add a new route
    *
@@ -16,8 +16,7 @@ class Router
    * @param string $controller
    * @return void
    */
-  public function registerRoute($method, $uri, $action)
-  {
+  public function registerRoute($method, $uri, $action) {
     list($controller, $controllerMethod) = explode("@", $action);
     //
     $this->routes[] = [
@@ -27,7 +26,7 @@ class Router
       "controllerMethod" => $controllerMethod,
     ];
   }
-  //
+  
   /**
    * Add a GET router
    * @param string $url
@@ -38,7 +37,7 @@ class Router
   {
     $this->registerRoute("GET", $uri, $controller);
   }
-  //
+  
   /**
    * Add a POST router
    * @param string $url
@@ -49,7 +48,7 @@ class Router
   {
     $this->registerRoute("POST", $uri, $controller);
   }
-  //
+  
   /**
    * Add a PUT router
    * @param string $url
@@ -60,7 +59,7 @@ class Router
   {
     $this->registerRoute("PUT", $uri, $controller);
   }
-  //
+  
   /**
    * Add a DELETE router
    * @param string $url
@@ -71,15 +70,14 @@ class Router
   {
     $this->registerRoute("DELETE", $uri, $controller);
   }
-  //
+  
   /**
    * Route Request
    * @param string $uri
    * @param string $method
    * @return void
    */
-  public function route($uri)
-  {
+  public function route($uri) {
     $requestMethod = $_SERVER["REQUEST_METHOD"];
     //
     foreach ($this->routes as $route) {
