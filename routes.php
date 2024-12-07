@@ -19,7 +19,10 @@ $router->get("/workopia/public/listings/create", "ListingController@create");
 // $router->get("/workopia/public/listing", "ListingController@show");
 
 // Dynamic Routes
-$router->get("/workopia/public/listing/{id}", "ListingController@show");
+$router->get("/workopia/public/listings/{id}", "ListingController@show");
 
 // POST Routes
 $router->post("/workopia/public/listings", "ListingController@store");
+
+// DELETE Routes
+$router->delete("/workopia/public/listings/{id}", "ListingController@destroy");

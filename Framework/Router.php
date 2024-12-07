@@ -33,8 +33,7 @@ class Router
    * @param string $controller
    * @return void
    */
-  public function get($uri, $controller)
-  {
+  public function get($uri, $controller){
     $this->registerRoute("GET", $uri, $controller);
   }
   
@@ -44,8 +43,7 @@ class Router
    * @param string $controller
    * @return void
    */
-  public function post($uri, $controller)
-  {
+  public function post($uri, $controller){
     $this->registerRoute("POST", $uri, $controller);
   }
   
@@ -55,8 +53,7 @@ class Router
    * @param string $controller
    * @return void
    */
-  public function put($uri, $controller)
-  {
+  public function put($uri, $controller){
     $this->registerRoute("PUT", $uri, $controller);
   }
   
@@ -66,8 +63,7 @@ class Router
    * @param string $controller
    * @return void
    */
-  public function delete($uri, $controller)
-  {
+  public function delete($uri, $controller){
     $this->registerRoute("DELETE", $uri, $controller);
   }
   
@@ -79,6 +75,14 @@ class Router
    */
   public function route($uri) {
     $requestMethod = $_SERVER["REQUEST_METHOD"];
+    //
+
+    // Check for _method input
+    if ($requestMethod === "POST" && isset($_POST["_method"])){
+      // Override the request method with the value of _method
+      $requestMethod = strtoupper($_POST["_method"]);
+    }
+
     //
     foreach ($this->routes as $route) {
 
