@@ -73,7 +73,8 @@ class ListingController
    *
    * @return void
    */
-  public function store() {
+  public function store()
+  {
     $allowedFields = ["title", "description", "salary", "tags", "company", "address", "city", "state", "phone", "email", "requirements", "benefits"];
     //
     $newListingsData = array_intersect_key($_POST, array_flip($allowedFields));
@@ -88,13 +89,13 @@ class ListingController
     $requiredFields = ["title", "description", "email", "city", "state", "salary"];
     $errors = [];
     //
-    foreach($requiredFields as $field){
-      if (empty($newListingsData[$field]) || !Validation::string($newListingsData[$field])){
+    foreach ($requiredFields as $field) {
+      if (empty($newListingsData[$field]) || !Validation::string($newListingsData[$field])) {
         $errors[$field] = ucfirst($field) . " is required";
       }
     }
     //
-    if (!empty($errors)){
+    if (!empty($errors)) {
       //reload view with errors
       loadView("/listings/create", [
         "errors" => $errors,
@@ -105,7 +106,7 @@ class ListingController
       echo "success";
       //
       $fields = [];
-      foreach($newListingsData as $field => $value){
+      foreach ($newListingsData as $field => $value) {
         $fields[] = $field;
       }
       $fields = implode(", ", $fields);
@@ -113,7 +114,7 @@ class ListingController
       $values = [];
       foreach ($newListingsData as $field => $value) {
         // Convert empty strings to null;
-        if ($value === ""){
+        if ($value === "") {
           $newListingsData[$field] = null;
         }
         $values[] = ":" . $field;
@@ -131,7 +132,8 @@ class ListingController
    * @param array $params
    * @return void
    */
-  public function destroy($params) {
+  public function destroy($params)
+  {
     $id = $params["id"];
     $params = [
       "id" => $id,
@@ -139,7 +141,7 @@ class ListingController
     //
     $listing = $this->db->query("SELECT * FROM listings WHERE id = :id", $params)->fetch();
     //
-    if(!$listing){
+    if (!$listing) {
       ErrorController::notFound("Listing not found");
       return;
     }
@@ -151,5 +153,93 @@ class ListingController
 
     //
     redirect("/workopia/public/listings");
+  }
+
+  /** Show listing Edit form
+   *
+   * @param array $params
+   * @return void
+   */
+  public function edit($params)
+  {
+    $id = $params["id"] ?? "";
+    //
+    $params = [
+      "id" => $id
+    ];
+    //
+    $listing = $this->db->query("SELECT * FROM listings WHERE id = :id", $params)->fetch();
+
+    // Check if listings exists
+    if (!$listing) {
+      ErrorController::notFound("Listing not found");
+      return;
+    }
+
+    loadView("listings/edit", [
+      "listing" => $listing,
+    ]);
+  }
+
+  /**
+   * update listing
+   *
+   * @param array $params
+   * @return void
+   */
+  public function update($params)
+  {
+    $id = $params["id"] ?? "";
+    //
+    $params = [
+      "id" => $id
+    ];
+    //
+    $listing = $this->db->query("SELECT * FROM listings WHERE id = :id", $params)->fetch();
+
+    // Check if listings exists
+    if (!$listing) {
+      ErrorController::notFound("Listing not found");
+      return;
+    }
+
+    $allowedFields = ["title", "description", "salary", "tags", "company", "address", "city", "state", "phone", "email", "requirements", "benefits"];
+
+    $updateValues = [];
+
+    $updateValues = array_intersect_key($_POST, array_flip($allowedFields));
+
+    $updateValues = array_map("sanitize", $updateValues);
+
+    $requiredFields = ["title", "description", "email", "city", "state", "salary"];
+
+    $errors = [];
+
+    foreach ($requiredFields as $field) {
+      if (empty($updateValues[$field]) || !Validation::string($updateValues[$field])) {
+        $errors[$field] = ucfirst($field) . " is required";
+      }
+    }
+
+    if (!empty($errors)){
+      loadView("listings/edit", [
+        "listing" => $listing,
+        "errors" => $errors,
+      ]);
+      exit;
+    } else {
+      // Submit to database
+      $updateFields = [];
+      foreach (array_keys($updateValues) as $field){
+        $updateFields[] = "{$field} = :{$field}";
+      }
+      $updateFields = implode(", ", $updateFields);
+      $updateQuery = "UPDATE listings SET $updateFields WHERE id = :id";
+      $updateValues["id"] = $id;
+      $this->db->query($updateQuery, $updateValues);
+      $_SESSION["success_message"] = "Listing Updated";
+      redirect("/workopia/public/listings/{$id}");
+    }
+    
   }
 };
