@@ -35,3 +35,4 @@ $router->delete("/workopia/public/listings/{id}", "ListingController@destroy");
 $router->get("/workopia/public/auth/register", "UserController@create");
 $router->get("/workopia/public/auth/login", "UserController@login");
 
+$router->post("/workopia/public/auth/register", "UserController@store");
