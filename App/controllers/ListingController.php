@@ -3,7 +3,9 @@
 namespace App\controllers;
 
 use Framework\Database;
+use Framework\Session;
 use Framework\Validation;
+use Framework\Authorization;
 
 // use Framework\Validation;
 
@@ -24,7 +26,7 @@ class ListingController
    */
   public function index()
   {
-    $listings = $this->db->query("SELECT * FROM listings")->fetchAll();
+    $listings = $this->db->query("SELECT * FROM listings ORDER BY created_at DESC")->fetchAll();
     //
     loadView("listings/index", [
       "listings" => $listings,
@@ -79,7 +81,7 @@ class ListingController
     //
     $newListingsData = array_intersect_key($_POST, array_flip($allowedFields));
     //
-    $newListingsData["user_id"] = 3;
+    $newListingsData["user_id"] = Session::get("user")["id"];
 
     // We use the sanitize function to make sure only a string is rendered,
     // otherwise someone could pass in HTML code or something similar, and that
@@ -140,12 +142,19 @@ class ListingController
     ];
     //
     $listing = $this->db->query("SELECT * FROM listings WHERE id = :id", $params)->fetch();
-    //
+    
+    // Check if listing exists
     if (!$listing) {
       ErrorController::notFound("Listing not found");
       return;
     }
-    //
+    
+    // Authorization
+    if (!Authorization::isOwner($listing->user_id)){
+      $_SESSION["error_message"] = "You are not authorized to delete this listing";
+      return redirect("/workopia/public/listings/" . $listing->id);
+    }
+
     $this->db->query("DELETE FROM listings WHERE id = :id", $params);
 
     // Set flash message
@@ -187,8 +196,7 @@ class ListingController
    * @param array $params
    * @return void
    */
-  public function update($params)
-  {
+  public function update($params){
     $id = $params["id"] ?? "";
     //
     $params = [
