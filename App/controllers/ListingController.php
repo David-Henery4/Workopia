@@ -172,8 +172,7 @@ class ListingController
    * @param array $params
    * @return void
    */
-  public function edit($params)
-  {
+  public function edit($params){
     $id = $params["id"] ?? "";
     //
     $params = [
@@ -186,6 +185,12 @@ class ListingController
     if (!$listing) {
       ErrorController::notFound("Listing not found");
       return;
+    }
+
+    // Authorization
+    if (!Authorization::isOwner($listing->user_id)) {
+      Session::setFlashMessage("error_message", "You are not authorized to update this listing");
+      return redirect("/workopia/public/listings/" . $listing->id);
     }
 
     loadView("listings/edit", [
@@ -212,6 +217,12 @@ class ListingController
     if (!$listing) {
       ErrorController::notFound("Listing not found");
       return;
+    }
+
+    // Authorization
+    if (!Authorization::isOwner($listing->user_id)) {
+      Session::setFlashMessage("error_message", "You are not authorized to update this listing");
+      return redirect("/workopia/public/listings/" . $listing->id);
     }
 
     $allowedFields = ["title", "description", "salary", "tags", "company", "address", "city", "state", "phone", "email", "requirements", "benefits"];
@@ -248,7 +259,7 @@ class ListingController
       $updateQuery = "UPDATE listings SET $updateFields WHERE id = :id";
       $updateValues["id"] = $id;
       $this->db->query($updateQuery, $updateValues);
-      $_SESSION["success_message"] = "Listing Updated";
+      Session::setFlashMessage("success_message", "Listing Updated successfully");
       redirect("/workopia/public/listings/{$id}");
     }
     

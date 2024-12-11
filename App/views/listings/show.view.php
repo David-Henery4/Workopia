@@ -15,18 +15,19 @@ loadPartial("head");
         Back To Listings
       </a>
 
-
-      <div class="flex space-x-4 ml-4">
-        <a href="/workopia/public/listings/edit/<?= $listing->id ?>" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">Edit</a>
-
-        <!-- Delete Form -->
-        <form method="POST">
-          <input type="hidden" name="_method" value="DELETE" />
-          <button type="submit" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded">Delete</button>
-        </form>
-        <!-- End Delete Form -->
-
-      </div>
+      <?php if(Framework\Authorization::isOwner($listing->user_id)) : ?>
+        <div class="flex space-x-4 ml-4">
+          <a href="/workopia/public/listings/edit/<?= $listing->id ?>" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">Edit</a>
+  
+          <!-- Delete Form -->
+          <form method="POST">
+            <input type="hidden" name="_method" value="DELETE" />
+            <button type="submit" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded">Delete</button>
+          </form>
+          <!-- End Delete Form -->
+  
+        </div>
+      <?php endif ; ?>
 
 
     </div>
