@@ -18,6 +18,10 @@ $router->get("/workopia/public/listings", "ListingController@index");
 $router->get("/workopia/public/listings/create", "ListingController@create", ["auth"]);
 // $router->get("/workopia/public/listing", "ListingController@show");
 
+// Search Routes
+$router->get("/workopia/public/listings/search", "ListingController@search");
+
+
 // Update Routes
 $router->get("/workopia/public/listings/edit/{id}", "ListingController@edit", ["auth"]);
 $router->put("/workopia/public/listings/{id}", "ListingController@update", ["auth"]);
